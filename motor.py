@@ -19,8 +19,11 @@ coil_A_pin = 4    # PIN 7     (ULN2003 IN 1)
 coil_B_pin = 17   # PIN 11    (ULN2003 IN 2)
 coil_C_pin = 27   # PIN 13    (ULN2003 IN 3)
 coil_D_pin = 22   # PIN 15    (ULN2003 IN 4)
+f_carrera = 18    # PIN 12
 
 total_pasos = 2038
+
+posicion = 0;
 
 # SELECCION DE MODO
 modo = 1    # 0 - Wave Drive: Un estator a la vez.
@@ -63,6 +66,7 @@ GPIO.setup(coil_A_pin, GPIO.OUT)
 GPIO.setup(coil_B_pin, GPIO.OUT)
 GPIO.setup(coil_C_pin, GPIO.OUT)
 GPIO.setup(coil_D_pin, GPIO.OUT)
+GPIO.setup(f_carrera, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
  
 def setPaso(w1, w2, w3, w4):
@@ -92,9 +96,26 @@ def reversa(delay, cant_pasos):
 def desenergizar_bobinas ():
     setPaso(0,0,0,0)
 
+def deteccion_de_cero ():
+    retencion = True
+    angulo = 10
+    delay = 2
+    cant_pasos = int((total_pasos / 360) * angulo)
+    while retencion:
+        if (GPIO.input(f_carrera)):
+            reversa(delay / 1000.0, int(cant_pasos))
+        else:
+            posicion = 0
+            retencion = False
+    desenergizar_bobinas()
+
 if __name__ == '__main__':
     
     limpiar_pantalla()
+    # MODO: 1 - Deteccion de cero.
+    #       2 - Desplazamiento.
+    deteccion_de_cero()
+
     while True:
         limpiar_pantalla()
         delay = input("Delay (ms)?: ")
