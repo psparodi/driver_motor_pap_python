@@ -98,22 +98,23 @@ if __name__ == '__main__':
     while True:
         limpiar_pantalla()
         delay = input("Delay (ms)?: ")
-        print(" ")
-        direccion = input ("Direccion? [1:adelante / 2:reversa]: ")
+        #print(" ")
+        #direccion = input ("Direccion? [1:adelante / 2:reversa]: ")
         print(" ")
         opcion = input("Modo? [1:pasos / 2:angulo]: ")
         print(" ")
-        if opcion == "1":
-            cant_pasos = input("Pasos?: ")
-            if direccion == "1":
-                adelante(int(delay) / 1000.0, int(cant_pasos))
-            elif direccion == "2":
-                reversa(int(delay) / 1000.0, int(cant_pasos))
-        elif opcion == "2":
-            angulo = input("Angulo?: ")
-            cant_pasos = int((total_pasos / 360) * int(angulo))
-            if direccion == "1":
-                adelante(int(delay) / 1000.0, int(cant_pasos))
-            elif direccion == "2":
-                reversa(int(delay) / 1000.0, int(cant_pasos))
-        desenergizar_bobinas()
+        while True:
+            if opcion == "1":
+                cant_pasos = input("Pasos?: ")
+                if (abs(int(cant_pasos)) == int(cant_pasos)):
+                    reversa(int(delay) / 1000.0, int(cant_pasos))
+                else:
+                    adelante(int(delay) / 1000.0, abs(int(cant_pasos)))
+            elif opcion == "2":
+                angulo = input("Angulo? (+/-): ")
+                cant_pasos = int((total_pasos / 360) * abs(int(angulo)))
+                if (abs(int(angulo)) == int(angulo)):
+                    reversa(int(delay) / 1000.0, int(cant_pasos))
+                else:
+                    adelante(int(delay) / 1000.0, abs(int(cant_pasos)))
+            desenergizar_bobinas()
