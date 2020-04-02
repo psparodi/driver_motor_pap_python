@@ -2,4 +2,4 @@
 
 ### Branch: final_carrera.
 
-Agregadas funcionalidades para deteccion de cero con final de carrera. Calibración de posiciones para filtros opticos.
+Agregadas funcionalidades para deteccion de cero con final de carrera. Calibración de posiciones para filtros ópticos.
