@@ -6,6 +6,8 @@ from os import system, name
 # Ejemplo de control completo para motor paso a paso 28BYJ-48 con driver ULN2003 #
 ##################################################################################
 
+# Ejemplo para importar funciones en otro archivo de código
+
 # DIR: 10.2.41.38
 # SSH: pi@10.2.41.38
  
