@@ -23,7 +23,10 @@ f_carrera = 18    # PIN 12
 
 total_pasos = 2038
 
-posicion = 0;
+posicion = 0;   #   posicion absoluta
+posicion_1 = 0; #   siempre cero
+posicion_2 = 0;
+posicion_3 = 0;
 
 # SELECCION DE MODO
 modo = 1    # 0 - Wave Drive: Un estator a la vez.
@@ -106,21 +109,117 @@ def deteccion_de_cero ():
             reversa(delay / 1000.0, int(cant_pasos))
         else:
             posicion = 0
+            posicion_1 = 0
             retencion = False
     desenergizar_bobinas()
+
+def otras_posiciones():
+    retencion = True
+    delay = 2
+    global posicion
+    global posicion_1
+    global posicion_2
+    global posicion_3
+
+    while retencion:
+        limpiar_pantalla()
+        print("Posición 2: "+str(posicion))
+        print(" ")
+        angulo = input("Angulo? (+/-/y): ")
+        if (angulo != 'y'):
+            cant_pasos = int((total_pasos / 360) * abs(int(angulo)))
+            if (abs(int(angulo)) == int(angulo)):
+                if ((posicion + int(angulo)) <= 800):
+                    adelante(int(delay) / 1000.0, int(cant_pasos))
+                    posicion += int(angulo)
+            else:
+                if ((posicion + int(angulo)) >= 0):
+                    reversa(int(delay) / 1000.0, abs(int(cant_pasos)))
+                    posicion -= abs(int(angulo))
+        else:
+            posicion_2 = posicion
+            retencion = False
+        desenergizar_bobinas()
+    
+    retencion = True
+
+    while retencion:
+        limpiar_pantalla()
+        print("Posición 3: "+str(posicion))
+        print(" ")
+        angulo = input("Angulo? (+/-/y): ")
+        if (angulo != 'y'):
+            cant_pasos = int((total_pasos / 360) * abs(int(angulo)))
+            if (abs(int(angulo)) == int(angulo)):
+                if ((posicion + int(angulo)) <= 800):
+                    adelante(int(delay) / 1000.0, int(cant_pasos))
+                    posicion += int(angulo)
+            else:
+                if ((posicion + int(angulo)) >= 0):
+                    reversa(int(delay) / 1000.0, abs(int(cant_pasos)))
+                    posicion -= abs(int(angulo))
+        else:
+            posicion_3 = posicion
+            retencion = False
+        desenergizar_bobinas()
+
+    print(" ")
+    print("Posicion 1: " + str(posicion_1))
+    print("Posicion 2: " + str(posicion_2))
+    print("Posicion 3: " + str(posicion_3))
+    print(" ")
+    input("Presione ENTER...")
+
+def ir_a_posicion(pos):
+    global posicion
+    delay = 2
+
+    limpiar_pantalla()
+    cant_pasos = int((total_pasos / 360) * abs(int(pos-posicion)))
+    print("Posición: " + str(pos))
+    if (pos > posicion):
+        adelante(int(delay) / 1000.0, int(cant_pasos))
+    else:
+        reversa(int(delay) / 1000.0, int(cant_pasos))
+    posicion = pos
+    time.sleep(1)
+    
+def explorar_posiciones():
+    global posicion_1
+    global posicion_2
+    global posicion_3
+
+    ir_a_posicion(posicion_2)
+    time.sleep(1)
+    ir_a_posicion(posicion_3)
+    time.sleep(1)
+    ir_a_posicion(posicion_2)
+    time.sleep(1)
+    ir_a_posicion(posicion_1)
+    time.sleep(1)
+    ir_a_posicion(posicion_3)
+    time.sleep(1)
+    ir_a_posicion(posicion_1)
+    time.sleep(1)
+    ir_a_posicion(posicion_2)
+    time.sleep(1)
+    ir_a_posicion(posicion_1)
+    time.sleep(1)
 
 if __name__ == '__main__':
     
     limpiar_pantalla()
-    # MODO: 1 - Deteccion de cero.
-    #       2 - Desplazamiento.
+    
     deteccion_de_cero()
+    #otras_posiciones()
+    posicion_1 = 0
+    posicion_2 = 320
+    posicion_3 = 620
+    #explorar_posiciones()
 
     while True:
         limpiar_pantalla()
         delay = input("Delay (ms)?: ")
-        #print(" ")
-        #direccion = input ("Direccion? [1:adelante / 2:reversa]: ")
         print(" ")
         opcion = input("Modo? [1:pasos / 2:angulo]: ")
         print(" ")
@@ -128,14 +227,14 @@ if __name__ == '__main__':
             if opcion == "1":
                 cant_pasos = input("Pasos?: ")
                 if (abs(int(cant_pasos)) == int(cant_pasos)):
-                    reversa(int(delay) / 1000.0, int(cant_pasos))
+                    adelante(int(delay) / 1000.0, int(cant_pasos))
                 else:
-                    adelante(int(delay) / 1000.0, abs(int(cant_pasos)))
+                    reversa(int(delay) / 1000.0, abs(int(cant_pasos)))
             elif opcion == "2":
                 angulo = input("Angulo? (+/-): ")
                 cant_pasos = int((total_pasos / 360) * abs(int(angulo)))
                 if (abs(int(angulo)) == int(angulo)):
-                    reversa(int(delay) / 1000.0, int(cant_pasos))
+                    adelante(int(delay) / 1000.0, int(cant_pasos))
                 else:
-                    adelante(int(delay) / 1000.0, abs(int(cant_pasos)))
+                    reversa(int(delay) / 1000.0, abs(int(cant_pasos)))
             desenergizar_bobinas()
